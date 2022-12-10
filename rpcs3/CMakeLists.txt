@@ -25,6 +25,10 @@ elseif(NOT MSVC AND NOT CMAKE_CXX_FLAGS MATCHES "LIBICONV_PLUG")
     set(ADDITIONAL_LIBS ${ADDITIONAL_LIBS} "iconv")
 endif()
 
+if(USE_SDL)
+    add_definitions(-DHAVE_SDL2=1)
+endif()
+
 if(UNIX AND NOT APPLE)
     add_definitions(-DDATADIR="${CMAKE_INSTALL_FULL_DATADIR}/rpcs3")
     # Optionally enable X11 for window management
