@@ -13,8 +13,9 @@ AVVER="${COMM_TAG}-${COMM_COUNT}"
 echo "AVVER=$AVVER" >> ../.ci/ci-vars.env
 
 cd bin
-mkdir "rpcs3.app/Contents/lib/"
-cp "/usr/local/opt/llvm@13/lib/c++/libc++abi.1.0.dylib" "rpcs3.app/Contents/lib/libc++abi.1.dylib"
+[ -d "rpcs3.app/Contents/lib/" ] || mkdir "rpcs3.app/Contents/lib/"
+cp "/opt/homebrew/Cellar/llvm/15.0.6.reinstall/lib/c++/libc++abi.1.0.dylib" "rpcs3.app/Contents/lib/libc++abi.1.dylib"
+# cp "/usr/local/opt/llvm@13/lib/c++/libc++abi.1.0.dylib" "rpcs3.app/Contents/lib/libc++abi.1.dylib"
 rm -rf "rpcs3.app/Contents/Frameworks/QtPdf.framework" \
 "rpcs3.app/Contents/Frameworks/QtQml.framework" \
 "rpcs3.app/Contents/Frameworks/QtQmlModels.framework" \
@@ -45,12 +46,14 @@ create-dmg --volname RPCS3 \
 "$DMG_FILEPATH" \
 RPCS3.app
 
-7z a -mx9 rpcs3-v"${COMM_TAG}"-"${COMM_COUNT}"-"${COMM_HASH}"_macos.7z RPCS3.app
+sudo codesign --force --deep --sign - RPCS3.app
 
-FILESIZE=$(stat -f %z "$DMG_FILEPATH")
-SHA256SUM=$(shasum -a 256 "$DMG_FILEPATH" | awk '{ print $1 }')
-cd ..
-echo "${SHA256SUM};${FILESIZE}B" > "$RELEASE_MESSAGE"
-cd bin
+# 7z a -mx9 rpcs3-v"${COMM_TAG}"-"${COMM_COUNT}"-"${COMM_HASH}"_macos.7z RPCS3.app
 
-mv ./rpcs3*_macos.7z "$ARTDIR"
+# FILESIZE=$(stat -f %z "$DMG_FILEPATH")
+# SHA256SUM=$(shasum -a 256 "$DMG_FILEPATH" | awk '{ print $1 }')
+# cd ..
+# echo "${SHA256SUM};${FILESIZE}B" > "$RELEASE_MESSAGE"
+# cd bin
+
+# mv ./rpcs3*_macos.7z "$ARTDIR"
